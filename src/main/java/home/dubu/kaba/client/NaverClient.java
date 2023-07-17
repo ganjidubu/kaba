@@ -13,7 +13,7 @@ public class NaverClient {
     private final NaverProperties properties;
 
 
-    public NaverSearchResponse searchPlace(String keyword) {
+    public NaverSearchResponse search(String keyword) {
         try {
             WebClient webClient = WebClient.create(properties.getUrl());
             return webClient.get()

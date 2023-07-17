@@ -1,7 +1,7 @@
 package home.dubu.kaba.client;
 
+import home.dubu.kaba.client.dto.KaKaoSearchResponse;
 import home.dubu.kaba.config.KakaoProperties;
-import home.dubu.kaba.response.KaKaoSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @RequiredArgsConstructor
 @Component
-public class KaKaoClient {
+public class KakaoClient {
+    private static final int SIZE = 10;
     private final KakaoProperties properties;
 
 
@@ -18,10 +19,11 @@ public class KaKaoClient {
             WebClient webClient = WebClient.create(properties.getUrl());
             return webClient.get()
                             .uri(uriBuilder -> uriBuilder
-                                .path("/search/keyword")
+                                .path("/search/keyword.json")
                                 .queryParam("query", keyword)
+                                .queryParam("size", SIZE)
                                 .build())
-                            .header("Authorization", properties.getApiKey())
+                            .header("Authorization", "KakaoAK " + properties.getApiKey())
                             .accept(MediaType.APPLICATION_JSON)
                             .retrieve()
                             .bodyToMono(KaKaoSearchResponse.class)
