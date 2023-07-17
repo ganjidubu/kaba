@@ -1,3 +1,8 @@
 kakao:
-  api-key: KakaoAK 41e03cf0bd5ad722286add680ee56394
+  api-key: 41e03cf0bd5ad722286add680ee56394
   url: https://dapi.kakao.com/v2/local
+
+naver:
+  client-id: OfPaU0AmJjAZ36t7hXlO
+  secret: wChOpoVEQd
+  url: https://openapi.naver.com/v1/search
