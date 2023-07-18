@@ -6,3 +6,12 @@ naver:
   client-id: OfPaU0AmJjAZ36t7hXlO
   secret: wChOpoVEQd
   url: https://openapi.naver.com/v1/search
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+  h2:
+    console:
+      enabled: true
