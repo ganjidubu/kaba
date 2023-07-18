@@ -1,6 +1,7 @@
 package home.dubu.kaba.controller;
 
-import home.dubu.kaba.response.PlaceSearchResponse;
+import home.dubu.kaba.dto.response.PlaceSearchResponse;
+import home.dubu.kaba.dto.response.SearchListResponse;
 import home.dubu.kaba.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,5 +19,11 @@ public class SearchController {
     @GetMapping
     public PlaceSearchResponse search(@RequestParam String keyword) {
         return searchService.searchPlace(keyword);
+    }
+
+
+    @GetMapping("/list")
+    public SearchListResponse getSearchList() {
+        return searchService.findSearchList();
     }
 }
