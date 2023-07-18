@@ -1,4 +1,4 @@
-package home.dubu.kaba.response;
+package home.dubu.kaba.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
