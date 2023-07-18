@@ -1,7 +1,6 @@
 package home.dubu.kaba.service;
 
-import home.dubu.kaba.client.KakaoClient;
-import home.dubu.kaba.client.NaverClient;
+import home.dubu.kaba.client.ClientService;
 import home.dubu.kaba.client.dto.KaKaoSearchResponse;
 import home.dubu.kaba.client.dto.NaverSearchResponse;
 import home.dubu.kaba.dto.response.PlaceSearchResponse;
@@ -26,16 +25,15 @@ public class SearchService {
     private static final int SEARCH_MAX_SIZE = 10;
     private static final int MAX_PAGE_SIZE = 10;
 
-    private final KakaoClient kakaoClient;
-    private final NaverClient naverClient;
+    private final ClientService clientService;
     private final SearchRepository repository;
 
 
     // TODO 테스트 케이스 더 가져와서 검증 해볼 것
     @Transactional
-    public PlaceSearchResponse searchPlace(String keyword) {
-        var kakaoSearchResponse = kakaoClient.search(keyword);
-        var naverSearchResponse = naverClient.search(keyword);
+    public PlaceSearchResponse searchByKeyword(String keyword) {
+        var kakaoSearchResponse = clientService.searchByKakao(keyword);
+        var naverSearchResponse = clientService.searchByNaver(keyword);
 
         var kakaoDocuments = kakaoSearchResponse.getDocuments();
         var naverItems = naverSearchResponse.getItems();
@@ -50,6 +48,15 @@ public class SearchService {
     }
 
 
+    public SearchListResponse findSearchList() {
+        var sort = Sort.by("count").descending();
+        var pageable = PageRequest.of(0, MAX_PAGE_SIZE, sort);
+        var result = repository.findAll(pageable);
+
+        return SearchListResponse.from(result.getContent());
+    }
+
+
     private void saveSearchKeyword(String keyword) {
         try {
             Optional<Search> retrievedSearch = repository.findByKeyword(keyword);
@@ -61,15 +68,6 @@ public class SearchService {
         } catch (Exception e) {
             System.out.println("save 실패");
         }
-    }
-
-
-    public SearchListResponse findSearchList() {
-        var sort = Sort.by("count").descending();
-        var pageable = PageRequest.of(0, MAX_PAGE_SIZE, sort);
-        var result = repository.findAll(pageable);
-
-        return SearchListResponse.from(result.getContent());
     }
 
 
@@ -111,7 +109,7 @@ public class SearchService {
 
 
     private void fillInNaverSearchResponse(List<PlaceSearchResponse.Place> response, List<NaverSearchResponse.Item> naverItems) {
-        for (NaverSearchResponse.Item naverItem : naverItems) {
+        for (var naverItem : naverItems) {
             if (response.size() == SEARCH_MAX_SIZE) {
                 break;
             }
@@ -121,7 +119,7 @@ public class SearchService {
 
 
     private void fillInKakaoSearchResponse(List<PlaceSearchResponse.Place> response, List<KaKaoSearchResponse.Document> kakaoDocuments) {
-        for (KaKaoSearchResponse.Document kakaoDocument : kakaoDocuments) {
+        for (var kakaoDocument : kakaoDocuments) {
             if (response.size() == SEARCH_MAX_SIZE) {
                 break;
             }

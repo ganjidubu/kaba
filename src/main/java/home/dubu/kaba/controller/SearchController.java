@@ -18,7 +18,7 @@ public class SearchController {
 
     @GetMapping
     public PlaceSearchResponse search(@RequestParam String keyword) {
-        return searchService.searchPlace(keyword);
+        return searchService.searchByKeyword(keyword);
     }
 
 
