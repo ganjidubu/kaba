@@ -29,7 +29,6 @@ public class SearchService {
     private final SearchRepository repository;
 
 
-    // TODO 테스트 케이스 더 가져와서 검증 해볼 것
     @Transactional
     public PlaceSearchResponse searchByKeyword(String keyword) {
         var kakaoSearchResponse = clientService.searchByKakao(keyword);
