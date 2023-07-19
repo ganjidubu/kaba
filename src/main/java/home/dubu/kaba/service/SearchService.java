@@ -1,8 +1,6 @@
 package home.dubu.kaba.service;
 
 import home.dubu.kaba.client.ClientService;
-import home.dubu.kaba.client.dto.KaKaoSearchResponse;
-import home.dubu.kaba.client.dto.NaverSearchResponse;
 import home.dubu.kaba.dto.response.PlaceSearchResponse;
 import home.dubu.kaba.dto.response.SearchListResponse;
 import home.dubu.kaba.entity.Search;
@@ -13,17 +11,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class SearchService {
-    private static final int SEARCH_MAX_SIZE = 10;
-    private static final int MAX_PAGE_SIZE = 10;
+    private static final int PLACE_SIZE_LIMIT = 10;
+    private static final int PAGE_INDEX = 0;
+    private static final int PAGE_SIZE = 10;
+    private static final String SORT_PROPERTY = "count";
 
     private final ClientService clientService;
     private final SearchRepository repository;
@@ -31,25 +28,35 @@ public class SearchService {
 
     @Transactional
     public PlaceSearchResponse searchByKeyword(String keyword) {
-        var kakaoSearchResponse = clientService.searchByKakao(keyword);
-        var naverSearchResponse = clientService.searchByNaver(keyword);
+        var kakaoPlaceSearchResponse = clientService.searchByKakao(keyword);
+        var naverPlaceSearchResponse = clientService.searchByNaver(keyword);
 
-        var kakaoDocuments = kakaoSearchResponse.getDocuments();
-        var naverItems = naverSearchResponse.getItems();
+        var kakaoPlaces = kakaoPlaceSearchResponse.toDomain();
+        var naverPlaces = naverPlaceSearchResponse.toDomain();
 
-        List<PlaceSearchResponse.Place> response = fillInCommonResponse(kakaoDocuments, naverItems);
-        fillInKakaoSearchResponse(response, kakaoDocuments);
-        fillInNaverSearchResponse(response, naverItems);
+        var places = kakaoPlaces.getCommonPlaces(naverPlaces, PLACE_SIZE_LIMIT);
+        if (places.isLimitSize(PLACE_SIZE_LIMIT)) {
+            return PlaceSearchResponse.from(places);
+        }
+
+        var restKakaoPlaces = kakaoPlaces.getKakaoPlacesExceptCommon(places, PLACE_SIZE_LIMIT);
+        places.addAll(restKakaoPlaces);
+        if (places.isLimitSize(PLACE_SIZE_LIMIT)) {
+            return PlaceSearchResponse.from(places);
+        }
+
+        var restNaverPlaces = naverPlaces.getNaverPlacesExceptCommon(places, PLACE_SIZE_LIMIT);
+        places.addAll(restNaverPlaces);
 
         saveSearchKeyword(keyword);
 
-        return new PlaceSearchResponse(response);
+        return PlaceSearchResponse.from(places);
     }
 
 
     public SearchListResponse findSearchList() {
-        var sort = Sort.by("count").descending();
-        var pageable = PageRequest.of(0, MAX_PAGE_SIZE, sort);
+        var sort = Sort.by(SORT_PROPERTY).descending();
+        var pageable = PageRequest.of(PAGE_INDEX, PAGE_SIZE, sort);
         var result = repository.findAll(pageable);
 
         return SearchListResponse.from(result.getContent());
@@ -66,63 +73,6 @@ public class SearchService {
             }
         } catch (Exception e) {
             System.out.println("save 실패");
-        }
-    }
-
-
-    private List<PlaceSearchResponse.Place> fillInCommonResponse(List<KaKaoSearchResponse.Document> kakaoDocuments, List<NaverSearchResponse.Item> naverItems) {
-        List<PlaceSearchResponse.Place> response = new ArrayList<>();
-        for (int i = 0; i < kakaoDocuments.size(); i++) {
-            var kakaoDocument = kakaoDocuments.get(i);
-            var kakaoAddress = kakaoDocument.getAddressName();
-            String slicedKakaoAddress = getSlicedKakaoAddress(kakaoAddress);
-
-            for (int j = 0; j < naverItems.size(); j++) {
-                var naverAddress = naverItems.get(j).getAddress();
-                if (naverAddress.contains(slicedKakaoAddress)) {
-                    response.add(new PlaceSearchResponse.Place(kakaoDocument.getPlaceName(), kakaoDocument.getAddressName()));
-                    naverItems.remove(j);
-                    kakaoDocuments.remove(i--);
-                    break;
-                }
-            }
-            if (response.size() == SEARCH_MAX_SIZE) {
-                break;
-            }
-        }
-        return response;
-    }
-
-
-    /**
-     * 네이버 지역 주소와 비교했을 때 ~시 부분 빼고 일치하므로 ~시 부분 slice
-     *
-     * @param kakaoPlaceAddress
-     * @return
-     */
-    private String getSlicedKakaoAddress(String kakaoPlaceAddress) {
-        var splits = kakaoPlaceAddress.split(" ");
-        splits = Arrays.copyOfRange(splits, 1, splits.length);
-        return String.join(" ", splits);
-    }
-
-
-    private void fillInNaverSearchResponse(List<PlaceSearchResponse.Place> response, List<NaverSearchResponse.Item> naverItems) {
-        for (var naverItem : naverItems) {
-            if (response.size() == SEARCH_MAX_SIZE) {
-                break;
-            }
-            response.add(new PlaceSearchResponse.Place(naverItem.getTitle(), naverItem.getAddress()));
-        }
-    }
-
-
-    private void fillInKakaoSearchResponse(List<PlaceSearchResponse.Place> response, List<KaKaoSearchResponse.Document> kakaoDocuments) {
-        for (var kakaoDocument : kakaoDocuments) {
-            if (response.size() == SEARCH_MAX_SIZE) {
-                break;
-            }
-            response.add(new PlaceSearchResponse.Place(kakaoDocument.getPlaceName(), kakaoDocument.getAddressName()));
         }
     }
 }
