@@ -1,7 +1,7 @@
 package home.dubu.kaba.client;
 
-import home.dubu.kaba.client.dto.KaKaoSearchResponse;
-import home.dubu.kaba.client.dto.NaverSearchResponse;
+import home.dubu.kaba.client.dto.KakaoPlaceSearchResponse;
+import home.dubu.kaba.client.dto.NaverPlaceSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +12,12 @@ public class ClientService {
     private final KakaoClient kakaoClient;
 
 
-    public KaKaoSearchResponse searchByKakao(String keyword) {
+    public KakaoPlaceSearchResponse searchByKakao(String keyword) {
         return kakaoClient.search(keyword);
     }
 
 
-    public NaverSearchResponse searchByNaver(String keyword) {
+    public NaverPlaceSearchResponse searchByNaver(String keyword) {
         return naverClient.search(keyword);
     }
 }

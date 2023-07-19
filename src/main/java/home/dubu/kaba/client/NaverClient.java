@@ -1,6 +1,6 @@
 package home.dubu.kaba.client;
 
-import home.dubu.kaba.client.dto.NaverSearchResponse;
+import home.dubu.kaba.client.dto.NaverPlaceSearchResponse;
 import home.dubu.kaba.config.NaverProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -13,7 +13,7 @@ public class NaverClient {
     private final NaverProperties properties;
 
 
-    public NaverSearchResponse search(String keyword) {
+    public NaverPlaceSearchResponse search(String keyword) {
         try {
             WebClient webClient = WebClient.create(properties.getUrl());
             return webClient.get()
@@ -26,7 +26,7 @@ public class NaverClient {
                             .header("X-Naver-Client-Secret", properties.getSecret())
                             .accept(MediaType.APPLICATION_JSON)
                             .retrieve()
-                            .bodyToMono(NaverSearchResponse.class)
+                            .bodyToMono(NaverPlaceSearchResponse.class)
                             .block();
         } catch (Exception e) {
             // TODO 커스텀 익셉션으로 바꿀 것
