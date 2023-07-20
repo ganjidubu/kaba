@@ -1,7 +1,7 @@
 package home.dubu.kaba.client.dto;
 
-import home.dubu.kaba.domain.NaverPlace;
-import home.dubu.kaba.domain.NaverPlaces;
+import home.dubu.kaba.domain.Place;
+import home.dubu.kaba.domain.Places;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,10 +16,10 @@ public class NaverPlaceSearchResponse {
     private List<Item> items;
 
 
-    public NaverPlaces toDomain() {
-        return new NaverPlaces(items.stream()
-                                    .map(Item::toDomain)
-                                    .collect(Collectors.toList()));
+    public Places toDomain() {
+        return new Places(items.stream()
+                               .map(Item::toDomain)
+                               .collect(Collectors.toList()));
     }
 
 
@@ -32,8 +32,8 @@ public class NaverPlaceSearchResponse {
         private String roadAddress;
 
 
-        public NaverPlace toDomain() {
-            return new NaverPlace(title, address, roadAddress);
+        public Place toDomain() {
+            return new Place(title, address);
         }
     }
 }

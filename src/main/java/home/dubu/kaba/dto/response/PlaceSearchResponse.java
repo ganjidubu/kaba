@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlaceSearchResponse {
-    private List<Result> places;
+    private List<Result> results;
 
 
     public static PlaceSearchResponse from(Places places) {
-        return new PlaceSearchResponse(places.getPlaces().stream()
+        return new PlaceSearchResponse(places.getPlaceList().stream()
                                              .map(Result::from)
                                              .collect(Collectors.toList()));
     }

@@ -28,11 +28,8 @@ public class SearchService {
 
     @Transactional
     public PlaceSearchResponse searchByKeyword(String keyword) {
-        var kakaoPlaceSearchResponse = clientService.searchByKakao(keyword);
-        var naverPlaceSearchResponse = clientService.searchByNaver(keyword);
-
-        var kakaoPlaces = kakaoPlaceSearchResponse.toDomain();
-        var naverPlaces = naverPlaceSearchResponse.toDomain();
+        var kakaoPlaces = clientService.searchByKakao(keyword);
+        var naverPlaces = clientService.searchByNaver(keyword);
 
         var places = kakaoPlaces.getCommonPlaces(naverPlaces, PLACE_SIZE_LIMIT);
         if (places.isLimitSize(PLACE_SIZE_LIMIT)) {

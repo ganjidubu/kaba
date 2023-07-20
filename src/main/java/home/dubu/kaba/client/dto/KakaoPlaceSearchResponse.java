@@ -1,8 +1,8 @@
 package home.dubu.kaba.client.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import home.dubu.kaba.domain.KakaoPlace;
-import home.dubu.kaba.domain.KakaoPlaces;
+import home.dubu.kaba.domain.Place;
+import home.dubu.kaba.domain.Places;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +17,10 @@ public class KakaoPlaceSearchResponse {
     private List<Document> documents;
 
 
-    public KakaoPlaces toDomain() {
-        return new KakaoPlaces(documents.stream()
-                                        .map(Document::toDomain)
-                                        .collect(Collectors.toList()));
+    public Places toDomain() {
+        return new Places(documents.stream()
+                                   .map(Document::toDomain)
+                                   .collect(Collectors.toList()));
     }
 
 
@@ -36,8 +36,8 @@ public class KakaoPlaceSearchResponse {
         private String roadAddressName;
 
 
-        public KakaoPlace toDomain() {
-            return new KakaoPlace(placeName, addressName, roadAddressName);
+        public Place toDomain() {
+            return new Place(placeName, addressName);
         }
     }
 }
