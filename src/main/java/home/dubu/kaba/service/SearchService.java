@@ -34,17 +34,11 @@ public class SearchService {
         var naverPlaces = clientService.searchByNaver(keyword);
 
         var places = kakaoPlaces.getCommonPlaces(naverPlaces, PLACE_SIZE_LIMIT);
-        if (places.isLimitSize(PLACE_SIZE_LIMIT)) {
-            return PlaceSearchResponse.from(places);
-        }
 
-        var restKakaoPlaces = kakaoPlaces.getKakaoPlacesExceptCommon(places, PLACE_SIZE_LIMIT);
+        var restKakaoPlaces = kakaoPlaces.getPlacesExceptCommon(places, PLACE_SIZE_LIMIT - places.size());
         places.addAll(restKakaoPlaces);
-        if (places.isLimitSize(PLACE_SIZE_LIMIT)) {
-            return PlaceSearchResponse.from(places);
-        }
 
-        var restNaverPlaces = naverPlaces.getNaverPlacesExceptCommon(places, PLACE_SIZE_LIMIT);
+        var restNaverPlaces = naverPlaces.getPlacesExceptCommon(places, PLACE_SIZE_LIMIT - places.size());
         places.addAll(restNaverPlaces);
 
         return PlaceSearchResponse.from(places);
