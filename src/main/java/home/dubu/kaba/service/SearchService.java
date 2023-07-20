@@ -28,6 +28,8 @@ public class SearchService {
 
     @Transactional
     public PlaceSearchResponse searchByKeyword(String keyword) {
+        saveSearchKeyword(keyword);
+
         var kakaoPlaces = clientService.searchByKakao(keyword);
         var naverPlaces = clientService.searchByNaver(keyword);
 
@@ -44,8 +46,6 @@ public class SearchService {
 
         var restNaverPlaces = naverPlaces.getNaverPlacesExceptCommon(places, PLACE_SIZE_LIMIT);
         places.addAll(restNaverPlaces);
-
-        saveSearchKeyword(keyword);
 
         return PlaceSearchResponse.from(places);
     }
