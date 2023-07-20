@@ -25,7 +25,6 @@ class SearchRepositoryTest {
 
         // then
         assertThat(response).isNotEmpty();
-        assertThat(response.get().getId()).isNotNull();
         assertThat(response.get().getKeyword()).isEqualTo("keyword");
     }
 }

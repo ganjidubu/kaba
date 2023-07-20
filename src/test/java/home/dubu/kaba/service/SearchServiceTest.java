@@ -28,12 +28,14 @@ class SearchServiceTest {
     private ClientService clientService;
     @Mock
     private SearchRepository searchRepository;
+    @Mock
+    private SearchSaveService searchSaveService;
     private SearchService sut;
 
 
     @BeforeEach
     void setUp() {
-        sut = new SearchService(clientService, searchRepository);
+        sut = new SearchService(clientService, searchSaveService, searchRepository);
     }
 
 

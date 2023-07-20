@@ -3,15 +3,12 @@ package home.dubu.kaba.service;
 import home.dubu.kaba.client.ClientService;
 import home.dubu.kaba.dto.response.PlaceSearchResponse;
 import home.dubu.kaba.dto.response.SearchListResponse;
-import home.dubu.kaba.entity.Search;
 import home.dubu.kaba.repository.SearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -23,13 +20,15 @@ public class SearchService {
     private static final String SORT_PROPERTY = "count";
 
     private final ClientService clientService;
+    private final SearchSaveService searchSaveService;
     private final SearchRepository repository;
 
 
     @Transactional
     public PlaceSearchResponse searchByKeyword(String keyword) {
-        saveSearchKeyword(keyword);
-
+        synchronized (this) {
+            searchSaveService.saveSearchKeyword(keyword);
+        }
         var kakaoPlaces = clientService.searchByKakao(keyword);
         var naverPlaces = clientService.searchByNaver(keyword);
 
@@ -51,19 +50,5 @@ public class SearchService {
         var result = repository.findAll(pageable);
 
         return SearchListResponse.from(result.getContent());
-    }
-
-
-    private void saveSearchKeyword(String keyword) {
-        try {
-            Optional<Search> retrievedSearch = repository.findByKeyword(keyword);
-            if (retrievedSearch.isPresent()) {
-                retrievedSearch.get().countUp();
-            } else {
-                repository.save(new Search(keyword, 1));
-            }
-        } catch (Exception e) {
-            System.out.println("save 실패");
-        }
     }
 }
