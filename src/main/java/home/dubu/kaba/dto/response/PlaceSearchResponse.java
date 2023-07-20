@@ -3,6 +3,7 @@ package home.dubu.kaba.dto.response;
 import home.dubu.kaba.domain.Place;
 import home.dubu.kaba.domain.Places;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +24,7 @@ public class PlaceSearchResponse {
     }
 
 
+    @EqualsAndHashCode
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
