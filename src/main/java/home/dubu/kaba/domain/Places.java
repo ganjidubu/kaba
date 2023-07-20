@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,30 +17,17 @@ public class Places {
     public void addAll(Places places) {
         placeList.addAll(places.getPlaceList());
     }
-
-
-    public boolean isLimitSize(int maxSearchSize) {
-        return placeList.size() == maxSearchSize;
-    }
-
+    
 
     public Places getCommonPlaces(Places places, int maxSearchSize) {
         return new Places(placeList.stream()
-                                   .filter(place -> places.hasSamePlace(getSlicedAddress(place.getAddress())))
+                                   .filter(place -> places.hasSamePlace(place.getAddress()))
                                    .limit(maxSearchSize)
                                    .collect(Collectors.toList()));
     }
 
 
-    public Places getKakaoPlacesExceptCommon(Places places, int maxSearchSize) {
-        return new Places(placeList.stream()
-                                   .filter(place -> !places.hasSamePlace(getSlicedAddress(place.getAddress())))
-                                   .limit(maxSearchSize)
-                                   .collect(Collectors.toList()));
-    }
-
-
-    public Places getNaverPlacesExceptCommon(Places places, int maxSearchSize) {
+    public Places getPlacesExceptCommon(Places places, int maxSearchSize) {
         return new Places(placeList.stream()
                                    .filter(place -> !places.hasSamePlace(place.getAddress()))
                                    .limit(maxSearchSize)
@@ -55,10 +41,7 @@ public class Places {
     }
 
 
-    private String getSlicedAddress(String addressName) {
-        String[] splits = addressName.split(" ");
-        splits = Arrays.copyOfRange(splits, 1, splits.length);
-        return String.join(" ", splits);
+    public int size() {
+        return placeList.size();
     }
-
 }
