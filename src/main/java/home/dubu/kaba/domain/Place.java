@@ -14,16 +14,6 @@ public class Place {
     private String address;
 
 
-    public static Place from(KakaoPlace kakaoPlace) {
-        return new Place(kakaoPlace.getPlaceName(), kakaoPlace.getAddressName());
-    }
-
-
-    public static Place from(NaverPlace naverPlace) {
-        return new Place(naverPlace.getTitle(), naverPlace.getAddress());
-    }
-
-
     public boolean isSamePlace(String targetAddress) {
         var sourceSplits = address.split(" ");
         var targetSplits = targetAddress.split(" ");
