@@ -4,6 +4,9 @@ import home.dubu.kaba.hyunny.keyword.domain.entity.KeywordEntity;
 import home.dubu.kaba.hyunny.keyword.domain.vo.V2HottestKeywordVO;
 import home.dubu.kaba.hyunny.keyword.store.V2KeywordStore;
 import home.dubu.kaba.hyunny.keyword.store.repository.V2KeywordRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,9 +23,8 @@ public class JpaV2KeywordStore implements V2KeywordStore {
 
     @Override
     public List<V2HottestKeywordVO> getTopFiveHottestKeywords() {
-        return keywordRepository.findTopFiveHottestKeywords()
+        return keywordRepository.findTopFiveHottestKeywords(Pageable.ofSize(5))
                 .stream()
-                .limit(5)
                 .map(V2HottestKeywordVO::of)
                 .collect(Collectors.toList());
     }
