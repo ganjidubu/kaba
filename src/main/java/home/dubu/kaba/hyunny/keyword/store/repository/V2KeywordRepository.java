@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-
 public interface V2KeywordRepository extends JpaRepository<KeywordEntity, Long> {
 
     @Query("SELECT k.keyword as keyword, count(k.id) as counter"
