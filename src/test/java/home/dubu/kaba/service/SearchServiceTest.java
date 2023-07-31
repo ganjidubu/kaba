@@ -89,16 +89,16 @@ class SearchServiceTest {
     @Test
     void findSearchList() {
         // given
-        var searchList = List.of(new Search("곱창1", 1),
-                                 new Search("곱창2", 2),
-                                 new Search("곱창3", 3),
-                                 new Search("곱창4", 4),
-                                 new Search("곱창5", 5),
-                                 new Search("곱창6", 6),
-                                 new Search("곱창7", 7),
-                                 new Search("곱창8", 8),
-                                 new Search("곱창9", 9),
-                                 new Search("곱창10", 10));
+        var searchList = List.of(new Search(null, "곱창1", 1),
+                                 new Search(null, "곱창2", 2),
+                                 new Search(null, "곱창3", 3),
+                                 new Search(null, "곱창4", 4),
+                                 new Search(null, "곱창5", 5),
+                                 new Search(null, "곱창6", 6),
+                                 new Search(null, "곱창7", 7),
+                                 new Search(null, "곱창8", 8),
+                                 new Search(null, "곱창9", 9),
+                                 new Search(null, "곱창10", 10));
         int pageNumber = 0;
         int pageSize = 10;
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("count").descending());

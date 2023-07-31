@@ -17,16 +17,11 @@ public class SearchSaveService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveSearchKeyword(String keyword) {
-        try {
-            Optional<Search> retrievedSearch = repository.findByKeyword(keyword);
-            if (retrievedSearch.isPresent()) {
-                retrievedSearch.get().countUp();
-            } else {
-                repository.save(new Search(keyword, 1));
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println("save 실패");
+        Optional<Search> retrievedSearch = repository.findByKeyword(keyword);
+        if (retrievedSearch.isPresent()) {
+            retrievedSearch.get().countUp();
+        } else {
+            repository.save(new Search(null, keyword, 1));
         }
     }
 }

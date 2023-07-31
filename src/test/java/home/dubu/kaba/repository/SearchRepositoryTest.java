@@ -18,7 +18,7 @@ class SearchRepositoryTest {
     @Test
     void findByKeyword() {
         // given
-        searchRepository.save(new Search("keyword", 1));
+        searchRepository.save(new Search(null, "keyword", 1));
 
         // when
         var response = searchRepository.findByKeyword("keyword");

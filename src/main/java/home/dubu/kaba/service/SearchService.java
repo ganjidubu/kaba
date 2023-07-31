@@ -26,8 +26,18 @@ public class SearchService {
 
     @Transactional
     public PlaceSearchResponse searchByKeyword(String keyword) {
-        synchronized (this) {
-            searchSaveService.saveSearchKeyword(keyword);
+        int maxRetries = 3;
+        int retryCount = 0;
+
+        while (retryCount < maxRetries) {
+            try {
+                searchSaveService.saveSearchKeyword(keyword);
+                break;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                System.out.println("save 실패");
+                retryCount++;
+            }
         }
         var kakaoPlaces = clientService.searchByKakao(keyword);
         var naverPlaces = clientService.searchByNaver(keyword);
