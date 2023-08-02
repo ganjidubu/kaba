@@ -10,6 +10,9 @@ version = '0.0.1-SNAPSHOT'
 java {
 	sourceCompatibility = '11'
 }
+ext {
+	set('springCloudVersion', "2021.0.8")
+}
 
 repositories {
 	mavenCentral()
@@ -28,8 +31,16 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
